@@ -78,7 +78,7 @@ export const DataTable =  () => {
     }
 
     console.log(gridData)
-
+    if (localStorage.getItem('myAuth') == 'true') {
         return (
             <div style={{ height: 400, width: '100%' }}>
                 <h2>Cars In Garage</h2>
@@ -114,4 +114,11 @@ export const DataTable =  () => {
                 </Dialog>
             </div>
         );
-    }
+    } else {
+        return(
+            <div>
+                <h3>Please Sign In to View Your Car Collection</h3>
+            </div>
+            )
+    };
+}

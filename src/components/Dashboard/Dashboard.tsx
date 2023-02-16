@@ -22,6 +22,7 @@ import { ChevronRight,ChevronLeft } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme/themes";
 import { DataTable, CarForm } from '../../components';
+import CloseIcon from '@mui/icons-material/Close';
 
 const drawerWidth = 240;
 
@@ -94,9 +95,10 @@ const myStyles = {
 export const Dashboard = () => {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
+    const [error, setError] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const handleDrawerOpen = () => {
+    const handleDrawerOpen = () => {   
         setOpen(true);
     };
     const handleDrawerClose = () => {
@@ -114,13 +116,18 @@ export const Dashboard = () => {
         }
     ];
 
-    // Handle Dialog Open/Close
+    // user cannot add cars to collection unless they are signed in
     const handleDialogOpen = () => {
-        setDialogOpen(true);
+        if (localStorage.getItem('myAuth') == 'true') {
+            setDialogOpen(true);
+        } else {
+            setError(true);
+        }
     }
 
     const handleDialogClose = () => {
         setDialogOpen(false);
+        setError(false);
     }
 
     return (
@@ -150,6 +157,12 @@ export const Dashboard = () => {
                         <DialogActions>
                             <Button onClick = {handleDialogClose} color="primary">Cancel</Button>
                         </DialogActions>
+                    </Dialog>
+                    <Dialog open={error} onClose={handleDialogClose} aria-labelledby="form-dialog-error">
+                        <DialogActions>
+                            <CloseIcon onClick={handleDialogClose} color="primary" />
+                        </DialogActions>
+                        <DialogTitle id="form-dialog-error">Please sign in to add cars to your collection.</DialogTitle>
                     </Dialog>
                 </Toolbar>
             </AppBar>

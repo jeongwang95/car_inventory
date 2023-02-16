@@ -18,3 +18,16 @@ export const Input = forwardRef((props:InputType, ref) => {
         ></TextField>
     );
 });
+
+export const Input2 = forwardRef((props: InputType, ref) => {
+    return (
+        <TextField
+            variant="outlined"
+            margin="normal"
+            inputRef={ref}
+            fullWidth
+            type="password"
+            {...props}
+        ></TextField>
+    );
+});
