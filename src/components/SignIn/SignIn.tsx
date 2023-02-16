@@ -7,7 +7,8 @@ import {
     GoogleAuthProvider,
     signOut,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword } from 'firebase/auth'
+    signInWithEmailAndPassword, 
+    onAuthStateChanged } from 'firebase/auth'
 import { 
     Container,
     Button,
@@ -22,6 +23,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Input, Input2 } from '../sharedComponents';
 import { styled } from '@mui/system';
 import { useForm } from 'react-hook-form';
+import { useGetData } from '../../custom-hooks'
 
 
 const signinStyles = {
@@ -85,13 +87,22 @@ const GoogleButton = (props:ButtonProps) => {
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
     const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+
     
     const signIn = async () =>{
         await signInWithGoogle()
         // Storing authenticated user in a local variable
-        localStorage.setItem('myAuth', 'true')
+        localStorage.setItem('myAuth', 'true');
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log(user.email);
+                console.log(user.uid);
+                localStorage.setItem("userToken", user.uid);
+            }
+        });
+        
         // navigate to dashboard after succesful signin
-        navigate('/dashbaord')
+        await navigate('/dashboard')
     }
 
     const signUsOut = async () =>{
@@ -146,16 +157,25 @@ export const SignIn = (props:UserProps) => {
                 // Signed in 
                 // Store authenticated user in local variable
                 localStorage.setItem('myAuth', 'true')
-                const user = userCredential.user;
-                console.log(user)
-                navigate('/dashboard') // brings us to dashboard on succesful signin
+                // const user = userCredential.user;
+                // console.log(user.uid)
+                // localStorage.setItem('userToken', user.uid)
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        console.log(user.email);
+                        console.log(user.uid);
+                        localStorage.setItem("userToken", user.uid);
+                    }
+                });
             })
 
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(error.message)
-            })
+            });
+
+        await navigate('/dashboard') // brings us to dashboard on succesful signin
     }
 
     return (

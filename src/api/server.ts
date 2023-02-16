@@ -1,4 +1,4 @@
-let token = `6a7e4f1f3fea2bfa4cf0d8e081e1ab51f81c8fc5fe1ada1e`
+let token = localStorage.getItem('userToken');
 
 export const serverCalls = {
     get: async () => {

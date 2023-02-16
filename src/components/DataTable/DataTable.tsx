@@ -78,6 +78,7 @@ export const DataTable =  () => {
     }
 
     console.log(gridData)
+    console.log(carData)
     if (localStorage.getItem('myAuth') == 'true') {
         return (
             <div style={{ height: 400, width: '100%' }}>
