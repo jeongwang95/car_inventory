@@ -79,7 +79,7 @@ export const Home = ( props:Props) => {
                 <MainText>
                     <h1>{props.title}</h1>
                     <p> Cars go vrooooom.</p>
-                    <Button color='primary' variant='contained' component={Link} to='/dashboard'>See the Cars</Button>
+                    <Button color='primary' variant='contained' component={Link} to='/dashboard'>See Your Cars</Button>
                 </MainText>
             </Main>
 

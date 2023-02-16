@@ -1,62 +1,117 @@
-import React from 'react';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import React, {useState} from 'react';
+import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
+import { serverCalls } from '../../api';
+import { useGetData } from '../../custom-hooks';
+import { Button,Dialog,
+        DialogActions,
+        DialogContent,
+        DialogContentText,
+        DialogTitle } from '@mui/material'; 
+import { CarForm } from '../../components/CarForm';
+import CloseIcon from '@mui/icons-material/Close';
 
 const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'id', headerName: 'Car ID', width: 200 },
     {
-        field: 'firstName',
-        headerName: 'First name',
-        width: 150,
+        field: 'year',
+        headerName: 'Year',
+        width: 100,
         editable: true,
     },
     {
-        field: 'lastName',
-        headerName: 'Last name',
-        width: 150,
+        field: 'make',
+        headerName: 'Make',
+        width: 100,
         editable: true,
     },
     {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        width: 110,
+        field: 'model',
+        headerName: 'Model',
+        width: 100,
         editable: true,
     },
     {
-        field: 'fullName',
-        headerName: 'Full name',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
-        width: 160,
-        valueGetter: (params: GridValueGetterParams) =>
-            `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        field: 'color',
+        headerName: 'Color',
+        width: 100,
+        editable: true,
+    },
+    {
+        field: 'car_type',
+        headerName: 'Car Type',
+        width: 100,
+        editable: false,
+    },
+];
+
+
+
+export const DataTable =  () => {
+    let { carData, getData } = useGetData();
+    let [open, setOpen] = useState(false);
+    let [error, setError] = useState(false);
+    let [gridData, setData] = useState<GridSelectionModel>([])
+
+    // if a car isnt selected, show error message
+    let handleOpen = () => {
+        if (gridData[0]) {
+            setOpen(true)
+        } else {
+            setError(true)
+        }
     }
-];
 
-const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 }
-];
+    let handleClose = () => {
+        setOpen(false)
+        setError(false)
+    }
 
-export const DataTable = () => {
-    return (
-        <div style={{ height: 400, width: '100%' }}>
-            <h2>Cars In Garage</h2>
-            <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            checkboxSelection
-            disableSelectionOnClick
-            />
-        </div>
-    );
-}
+    // if a car isnt selected, show error message
+    let deleteData = () => {
+        if (gridData[0]) {
+            serverCalls.delete(`${gridData[0]}`)
+            getData()
+        } else {
+            setError(true)
+        }
+        
+    }
+
+    console.log(gridData)
+
+        return (
+            <div style={{ height: 400, width: '100%' }}>
+                <h2>Cars In Garage</h2>
+                <DataGrid 
+                    rows={carData} 
+                    columns={columns} 
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                    checkboxSelection 
+                    onSelectionModelChange = {(newSelectionModel) => {setData(newSelectionModel);}}
+                    {...carData}  
+                />
+
+                <Button onClick={handleOpen}>Update</Button>
+                <Button variant="contained" color="error" onClick={deleteData}>Delete</Button>
+
+                {/*Dialog Pop Up begin */}
+                <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Update A Car</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>Car id: {gridData[0]}</DialogContentText>
+                        <CarForm id={`${gridData[0]}`}/>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick = {handleClose} color="primary">Cancel</Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog open={error} onClose={handleClose} aria-labelledby="form-dialog-error">
+                    <DialogActions>
+                        <CloseIcon onClick={handleClose} color="primary" />
+                    </DialogActions>
+                    <DialogTitle id="form-dialog-error">Please select a car to make changes.</DialogTitle>
+                </Dialog>
+            </div>
+        );
+    }

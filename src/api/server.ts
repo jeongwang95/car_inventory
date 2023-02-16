@@ -1,8 +1,8 @@
-let token = `YOUR-API-TOKEN-HERE`
+let token = `6a7e4f1f3fea2bfa4cf0d8e081e1ab51f81c8fc5fe1ada1e`
 
 export const serverCalls = {
     get: async () => {
-        const response = await fetch(`YOUR-URL-HERE`,{
+        const response = await fetch(`https://gamy-thinkable-technosaurus.glitch.me/api/cars`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ export const serverCalls = {
     },
 
     create: async(data: any = {}) => {
-        const response = await fetch(`YOUR-URL-HERE`,{
+        const response = await fetch(`https://gamy-thinkable-technosaurus.glitch.me/api/cars`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export const serverCalls = {
         return await response.json()
     },
     update: async (id:string, data:any = {}) => {
-        const response = await fetch(`YOUR-URL-HERE/${id}`, {
+        const response = await fetch(`https://gamy-thinkable-technosaurus.glitch.me/api/cars/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export const serverCalls = {
         });
     },
     delete: async(id:string) => {
-        const response = await fetch(`YOUR-URL-HERE/${id}`,{
+        const response = await fetch(`https://gamy-thinkable-technosaurus.glitch.me/api/cars/${id}`,{
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

@@ -10,13 +10,18 @@ import { Drawer as MUIDrawer,
     Divider,
     Button,
     CssBaseline, 
-    Box
+    Box,
+    Dialog, 
+    DialogActions, 
+    DialogContent, 
+    DialogContentText, 
+    DialogTitle 
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { ChevronRight,ChevronLeft } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme/themes";
-import { DataTable } from '../../components';
+import { DataTable, CarForm } from '../../components';
 
 const drawerWidth = 240;
 
@@ -89,6 +94,7 @@ const myStyles = {
 export const Dashboard = () => {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -108,6 +114,15 @@ export const Dashboard = () => {
         }
     ];
 
+    // Handle Dialog Open/Close
+    const handleDialogOpen = () => {
+        setDialogOpen(true);
+    }
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    }
+
     return (
         <Box sx={{display:'flex'}} >
             <CssBaseline />
@@ -126,7 +141,16 @@ export const Dashboard = () => {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap> Dashboard</Typography>
-                    <Button sx={ myStyles.toolbar_button }><b>Add Car</b></Button>
+                    <Button sx={ myStyles.toolbar_button } onClick={handleDialogOpen}><b>Add Car</b></Button>
+                    <Dialog open={dialogOpen} onClose={handleDialogClose} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title">Add a Car:</DialogTitle>
+                        <DialogContent>
+                            <CarForm />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick = {handleDialogClose} color="primary">Cancel</Button>
+                        </DialogActions>
+                    </Dialog>
                 </Toolbar>
             </AppBar>
             <MUIDrawer
